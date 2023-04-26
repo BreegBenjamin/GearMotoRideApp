@@ -31,13 +31,13 @@ class HomeScreen extends StatelessWidget {
               //Card Motos
 
               // Tarjetas principales
-              CardSwiper(movies: moviesProvider.onDisplayMovies),
+              CardSwiper(motorcycle: moviesProvider.listMotocicles),
 
               // Slider de Motos
               GearMotoSlider(
-                movies: moviesProvider.popularMovies, // populares,
+                motorcycles: moviesProvider.listMotocicles, // populares,
                 title: 'Lista de motos', // opcional
-                onNextPage: () => moviesProvider.getPopularMovies(),
+                onNextPage: () => moviesProvider.getMotorcycleByPagination(),
               ),
             ],
           ),

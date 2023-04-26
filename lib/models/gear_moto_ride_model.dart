@@ -8,130 +8,142 @@ String gearMotoRideModelToJson(GearMotoRideModel data) =>
 
 class GearMotoRideModel {
   GearMotoRideModel({
-    required this.result,
-    required this.status,
-    required this.message,
+    required this.query,
+    required this.motorcycle,
   });
 
-  Result result;
-  bool status;
-  String message;
+  String query;
+  List<Motorcycle> motorcycle;
 
   factory GearMotoRideModel.fromJson(Map<String, dynamic> json) =>
       GearMotoRideModel(
-        result: Result.fromJson(json["result"]),
-        status: json["status"],
-        message: json["message"],
+        query: json["query"],
+        motorcycle: List<Motorcycle>.from(
+            json["result"].map((x) => Motorcycle.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "result": result.toJson(),
-        "status": status,
-        "message": message,
+        "query": query,
+        "result": List<dynamic>.from(motorcycle.map((x) => x.toJson())),
       };
 }
 
-class Result {
-  Result({
-    required this.motos,
-  });
-
-  List<Moto> motos;
-
-  factory Result.fromJson(Map<String, dynamic> json) => Result(
-        motos: List<Moto>.from(json["motos"].map((x) => Moto.fromJson(x))),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "motos": List<dynamic>.from(motos.map((x) => x.toJson())),
-      };
-}
-
-class Moto {
-  Moto({
-    required this.motoId,
-    required this.brand,
-    required this.motorcycleName,
-    required this.year,
+class Motorcycle {
+  Motorcycle({
+    required this.brakePower,
     required this.country,
-    required this.category,
-    required this.cylinderCapacity,
-    required this.cylinders,
-    required this.engineTiming,
-    required this.maximumPower,
     required this.maximumTorque,
-    required this.weight,
-    required this.acceleration,
     required this.maximumSpeed,
     required this.driving,
-    required this.brakePower,
     required this.textDescription,
-    required this.imageUrlFrontPage,
+    required this.year,
+    required this.acceleration,
+    required this.cylinders,
+    required this.engineTiming,
     required this.imageUrlBackground,
+    required this.motoId,
+    required this.weight,
+    required this.cylinderCapacity,
+    required this.imageUrlFrontPage,
+    required this.brand,
+    required this.motorcycleName,
+    required this.category,
+    required this.maximumPower,
   });
 
-  String motoId;
-  String brand;
-  String motorcycleName;
-  String year;
+  String brakePower;
   String country;
-  String category;
-  String cylinderCapacity;
-  String cylinders;
-  String engineTiming;
-  String maximumPower;
   String maximumTorque;
-  String weight;
-  String acceleration;
   String maximumSpeed;
   String driving;
-  String brakePower;
-  List<String> textDescription;
-  String imageUrlFrontPage;
-  String imageUrlBackground;
+  String textDescription;
+  String year;
+  String acceleration;
+  String cylinders;
+  String engineTiming;
+  ImageUrl imageUrlBackground;
+  String motoId;
+  String weight;
+  String cylinderCapacity;
+  ImageUrl imageUrlFrontPage;
+  String brand;
+  String motorcycleName;
+  String category;
+  String maximumPower;
 
-  factory Moto.fromJson(Map<String, dynamic> json) => Moto(
-        motoId: json["motoId"],
-        brand: json["brand"],
-        motorcycleName: json["motorcycleName"],
-        year: json["year"],
+  factory Motorcycle.fromJson(Map<String, dynamic> json) => Motorcycle(
+        brakePower: json["brakePower"],
         country: json["country"],
-        category: json["category"],
-        cylinderCapacity: json["cylinderCapacity"],
-        cylinders: json["cylinders"],
-        engineTiming: json["engineTiming"],
-        maximumPower: json["maximumPower"],
         maximumTorque: json["maximumTorque"],
-        weight: json["weight"],
-        acceleration: json["acceleration"],
         maximumSpeed: json["maximumSpeed"],
         driving: json["driving"],
-        brakePower: json["brakePower"],
-        textDescription:
-            List<String>.from(json["textDescription"].map((x) => x)),
-        imageUrlFrontPage: json["imageUrlFrontPage"],
-        imageUrlBackground: json["imageUrlBackground"],
+        textDescription: json["textDescription"],
+        year: json["year"],
+        acceleration: json["acceleration"],
+        cylinders: json["cylinders"],
+        engineTiming: json["engineTiming"],
+        imageUrlBackground: ImageUrl.fromJson(json["imageUrlBackground"]),
+        motoId: json["motoId"],
+        weight: json["weight"],
+        cylinderCapacity: json["cylinderCapacity"],
+        imageUrlFrontPage: ImageUrl.fromJson(json["imageUrlFrontPage"]),
+        brand: json["brand"],
+        motorcycleName: json["motorcycleName"],
+        category: json["category"],
+        maximumPower: json["maximumPower"],
       );
 
   Map<String, dynamic> toJson() => {
-        "motoId": motoId,
-        "brand": brand,
-        "motorcycleName": motorcycleName,
-        "year": year,
+        "brakePower": brakePower,
         "country": country,
-        "category": category,
-        "cylinderCapacity": cylinderCapacity,
-        "cylinders": cylinders,
-        "engineTiming": engineTiming,
-        "maximumPower": maximumPower,
         "maximumTorque": maximumTorque,
-        "weight": weight,
-        "acceleration": acceleration,
         "maximumSpeed": maximumSpeed,
         "driving": driving,
-        "brakePower": brakePower,
-        "textDescription": List<dynamic>.from(textDescription.map((x) => x)),
-        "imageUrlFrontPage": imageUrlFrontPage,
-        "imageUrlBackground": imageUrlBackground,
+        "textDescription": textDescription,
+        "year": year,
+        "acceleration": acceleration,
+        "cylinders": cylinders,
+        "engineTiming": engineTiming,
+        "imageUrlBackground": imageUrlBackground.toJson(),
+        "motoId": motoId,
+        "weight": weight,
+        "cylinderCapacity": cylinderCapacity,
+        "imageUrlFrontPage": imageUrlFrontPage.toJson(),
+        "brand": brand,
+        "motorcycleName": motorcycleName,
+        "category": category,
+        "maximumPower": maximumPower,
+      };
+}
+
+class ImageUrl {
+  ImageUrl({
+    required this.asset,
+  });
+
+  Asset asset;
+
+  factory ImageUrl.fromJson(Map<String, dynamic> json) => ImageUrl(
+        asset: Asset.fromJson(json["asset"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "asset": asset.toJson(),
+      };
+}
+
+class Asset {
+  Asset({
+    required this.ref,
+  });
+  String urlPath = "https://cdn.sanity.io/images/kc2aszeh/production/";
+  String ref;
+
+  factory Asset.fromJson(Map<String, dynamic> json) => Asset(
+        ref: json["_ref"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "_ref": ref,
       };
 }

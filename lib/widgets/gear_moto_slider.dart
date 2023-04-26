@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:gear_moto_ride_app/models/models.dart';
 
 class GearMotoSlider extends StatefulWidget {
-  final List<Movie> movies;
+  final List<Motorcycle> motorcycles;
   final String? title;
   final Function onNextPage;
 
   const GearMotoSlider({
     Key? key,
-    required this.movies,
+    required this.motorcycles,
     required this.onNextPage,
     this.title,
   }) : super(key: key);
@@ -18,7 +18,7 @@ class GearMotoSlider extends StatefulWidget {
 }
 
 class _GearMotoSliderState extends State<GearMotoSlider> {
-  final ScrollController scrollController = new ScrollController();
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -59,10 +59,10 @@ class _GearMotoSliderState extends State<GearMotoSlider> {
             child: ListView.builder(
                 controller: scrollController,
                 scrollDirection: Axis.horizontal,
-                itemCount: widget.movies.length,
+                itemCount: widget.motorcycles.length,
                 itemBuilder: (_, int index) => _MoviePoster(
-                    widget.movies[index],
-                    '${widget.title}-$index-${widget.movies[index].id}')),
+                    widget.motorcycles[index],
+                    '${widget.title}-$index-${widget.motorcycles[index].motoId}')),
           ),
         ],
       ),
@@ -71,14 +71,16 @@ class _GearMotoSliderState extends State<GearMotoSlider> {
 }
 
 class _MoviePoster extends StatelessWidget {
-  final Movie movie;
+  final Motorcycle motorcycle;
   final String heroId;
 
-  const _MoviePoster(this.movie, this.heroId);
+  const _MoviePoster(this.motorcycle, this.heroId);
 
   @override
   Widget build(BuildContext context) {
-    movie.heroId = heroId;
+    motorcycle.motoId = heroId;
+    String imgUrl = _updateImageName(motorcycle.imageUrlFrontPage.asset.ref);
+    imgUrl = '${motorcycle.imageUrlFrontPage.asset.urlPath}$imgUrl';
 
     return Container(
       width: 130,
@@ -88,14 +90,14 @@ class _MoviePoster extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () =>
-                Navigator.pushNamed(context, 'details', arguments: movie),
+                Navigator.pushNamed(context, 'details', arguments: motorcycle),
             child: Hero(
-              tag: movie.heroId!,
+              tag: motorcycle.motoId!,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: FadeInImage(
                   placeholder: const AssetImage('assets/no-image.jpg'),
-                  image: NetworkImage(movie.fullPosterImg),
+                  image: NetworkImage(imgUrl),
                   width: 130,
                   height: 190,
                   fit: BoxFit.cover,
@@ -105,7 +107,7 @@ class _MoviePoster extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Text(
-            movie.title,
+            motorcycle.motorcycleName,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
@@ -113,5 +115,12 @@ class _MoviePoster extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _updateImageName(String input) {
+    String sinImage = input.replaceFirst('image-', '');
+    String extension = sinImage.substring(sinImage.lastIndexOf('-') + 1);
+    String conExtension = sinImage.replaceFirst('-$extension', '.$extension');
+    return conExtension;
   }
 }

@@ -13,16 +13,21 @@ import 'package:gear_moto_ride_app/models/search_response.dart';
 class MoviesProvider extends ChangeNotifier {
   final String _apiKey = '324f660cfd9d984ba74e315eca1e0c06';
   final String _baseUrl = 'api.themoviedb.org';
-  final String _baseUrlMotoGear = "gearmotorideapi.azurewebsites.net";
+  final String _baseUrlMotoGear = "kc2aszeh.api.sanity.io";
   final String _language = 'es-ES';
+  String _querySanity =
+      "*[motoId != null]{motoId, weight,motorcycleName, textDescription, category, year,country,category,cylinderCapacity,cylinders,engineTiming,maximumPower,maximumTorque,acceleration,maximumSpeed,driving,brakePower,imageUrlFrontPage,imageUrlBackground,brand}";
 
   List<Movie> onDisplayMovies = [];
   List<Movie> popularMovies = [];
-  List<Moto> listMotocicles = [];
+
+  List<Motorcycle> listMotocicles = [];
+  List<Motorcycle> popularListMotocicles = [];
 
   Map<int, List<Cast>> moviesCast = {};
 
   int _popularPage = 0;
+  int _numPageMoto = 0;
 
   final debouncer = Debouncer(
     duration: const Duration(milliseconds: 500),
@@ -39,7 +44,7 @@ class MoviesProvider extends ChangeNotifier {
     getOnDisplayMovies();
     getPopularMovies();
 
-    //getGearMotoRideData();
+    getGearMotoRideFirstData();
     //Notify
     notifyListeners();
   }
@@ -54,14 +59,9 @@ class MoviesProvider extends ChangeNotifier {
   }
 
   //Moto Ride Api
-  Future<String> _getJsonDataFromMotoApi(String endpoint,
-      [String motoId = '0', bool sendParam = false]) async {
-    var url = Uri();
-    if (sendParam) {
-      url = Uri.https(_baseUrlMotoGear, endpoint, {'motoId': motoId});
-    } else {
-      url = Uri.https(_baseUrlMotoGear, endpoint);
-    }
+  Future<String> _getJsonDataFromMotoApi(String query) async {
+    var url = Uri.https(_baseUrlMotoGear, '/v2023-04-24/data/query/production',
+        {'query': query});
 
     // Await the http get response, then decode the json-formatted response.
     final response = await http.get(url);
@@ -82,6 +82,13 @@ class MoviesProvider extends ChangeNotifier {
     final popularResponse = PopularResponse.fromJson(jsonData);
 
     popularMovies = [...popularMovies, ...popularResponse.results];
+  }
+
+  void getMotorcycleByPagination() async {
+    _numPageMoto += 10;
+    int numMP = _numPageMoto - 10;
+    String query = "$_querySanity[$numMP...$_numPageMoto]";
+    String json = await _getJsonDataFromMotoApi(query);
   }
 
   Future<List<Cast>> getMovieCast(int movieId) async {
@@ -122,13 +129,12 @@ class MoviesProvider extends ChangeNotifier {
   }
 
   //Moto Providers Data
-  getGearMotoRideData() async {
+  void getGearMotoRideFirstData() async {
     try {
-      String json =
-          await _getJsonDataFromMotoApi('/GetGearMotoRide', '2', false);
+      String json = await _getJsonDataFromMotoApi(_querySanity);
       GearMotoRideModel response = gearMotoRideModelFromJson(json);
-      if (response.status) {
-        listMotocicles = response.result.motos;
+      if (response.motorcycle.any((element) => true)) {
+        listMotocicles = response.motorcycle;
       }
     } catch (e) {
       print(e.toString());
